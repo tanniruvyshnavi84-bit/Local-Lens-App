@@ -69,12 +69,19 @@ const GuideDetails = () => {
                  const latestBooking = bookingsForThisGuide[0];
                  setExistingBooking(latestBooking);
                  
+                 const bookingStatusKey = `seen_booking_${latestBooking._id}_${latestBooking.status}`;
+                 const hasSeenStatus = localStorage.getItem(bookingStatusKey);
+
                  if (latestBooking.status === 'pending') {
                     setBookingStatus("Requested! Pending Guide Approval ⏳");
-                 } else if (latestBooking.status === 'accepted') {
+                 } else if (latestBooking.status === 'accepted' && !hasSeenStatus) {
                     setBookingStatus("Request Accepted! ✅");
-                 } else if (latestBooking.status === 'rejected') {
+                    localStorage.setItem(bookingStatusKey, 'true');
+                    setTimeout(() => setBookingStatus(""), 5000);
+                 } else if (latestBooking.status === 'rejected' && !hasSeenStatus) {
                     setBookingStatus("Request Declined ❌");
+                    localStorage.setItem(bookingStatusKey, 'true');
+                    setTimeout(() => setBookingStatus(""), 5000);
                  }
               }
            }
